@@ -20,12 +20,19 @@ export function CalculatorClient() {
   const [totalStake, setTotalStake] = React.useState('1000');
   const [odds1, setOdds1] = React.useState('');
   const [odds2, setOdds2] = React.useState('');
+  const [bookmaker1, setBookmaker1] = React.useState('Casa 1');
+  const [bookmaker2, setBookmaker2] = React.useState('Casa 2');
 
   React.useEffect(() => {
     const o1 = searchParams.get('odds1');
     const o2 = searchParams.get('odds2');
+    const b1 = searchParams.get('bookmaker1');
+    const b2 = searchParams.get('bookmaker2');
+
     if (o1) setOdds1(o1);
     if (o2) setOdds2(o2);
+    if (b1) setBookmaker1(b1);
+    if (b2) setBookmaker2(b2);
   }, [searchParams]);
 
   const numOdds1 = parseFloat(odds1);
@@ -85,7 +92,7 @@ export function CalculatorClient() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="odds1">Odd Casa 1</Label>
+              <Label htmlFor="odds1">Odd {bookmaker1}</Label>
               <Input
                 id="odds1"
                 value={odds1}
@@ -95,7 +102,7 @@ export function CalculatorClient() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="odds2">Odd Casa 2</Label>
+              <Label htmlFor="odds2">Odd {bookmaker2}</Label>
               <Input
                 id="odds2"
                 value={odds2}
@@ -117,7 +124,7 @@ export function CalculatorClient() {
               <div className="flex items-center justify-around rounded-lg border border-green-200 bg-green-50 p-4 text-center">
                 <div className="space-y-1">
                   <Label className="text-sm text-green-800">
-                    Entrada Casa 1
+                    Entrada {bookmaker1}
                   </Label>
                   <p className="text-2xl font-bold text-green-700">
                     R$ {stake1.toFixed(2)}
@@ -126,7 +133,7 @@ export function CalculatorClient() {
                 <ArrowRight className="h-6 w-6 text-green-400" />
                 <div className="space-y-1">
                   <Label className="text-sm text-green-800">
-                    Entrada Casa 2
+                    Entrada {bookmaker2}
                   </Label>
                   <p className="text-2xl font-bold text-green-700">
                     R$ {stake2.toFixed(2)}

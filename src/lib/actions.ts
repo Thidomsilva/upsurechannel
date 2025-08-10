@@ -48,9 +48,9 @@ export async function sendToTelegram(formData: FormData) {
       footer += `\n\n📊 <b>ROI: +${profit.toFixed(2)}%</b>`;
     }
 
-    // 4. Construct calculator URL
+    // 4. Construct calculator URL, now with bookmaker names
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
-    const calculatorUrl = `${baseUrl}/calculator?odds1=${numOdds1}&odds2=${numOdds2}`;
+    const calculatorUrl = `${baseUrl}/calculator?odds1=${numOdds1}&odds2=${numOdds2}&bookmaker1=${encodeURIComponent(extractedData.bookmaker1)}&bookmaker2=${encodeURIComponent(extractedData.bookmaker2)}`;
 
     // 5. Add calculator link to the footer
     footer += `\n\n👇 <b>Calcule sua entrada com qualquer valor!</b>
