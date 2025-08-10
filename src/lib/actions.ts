@@ -23,7 +23,7 @@ export async function sendToTelegram(formData: FormData) {
     const numOdds1 = parseFloat(odds1);
     const numOdds2 = parseFloat(odds2);
 
-    // 1. Format the text using the new AI flow
+    // 1. Format the text using the AI flow
     const formattedMessage = await formatBetForTelegram({ bettingData: text });
 
     // 2. Calculate profit percentage
@@ -32,7 +32,7 @@ export async function sendToTelegram(formData: FormData) {
     if (arbitragePercentage < 1) {
       const profit = (1 / arbitragePercentage - 1) * 100;
       profitHtml = `
-<b>Lucro Garantido: ${profit.toFixed(2)}%</b> ✨
+📊 <b>ROI: +${profit.toFixed(2)}%</b>
 `;
     }
 
@@ -42,7 +42,6 @@ export async function sendToTelegram(formData: FormData) {
     // 3. Build the final message with the formatted text, profit, and calculator link
     const message = `
 ${formattedMessage}
-
 ${profitHtml}
 👇 <b>Calcule sua entrada com qualquer valor!</b>
 <a href="${calculatorUrl}">ABRIR CALCULADORA DE SUREBET</a>

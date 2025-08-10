@@ -23,25 +23,22 @@ const formatBetPrompt = ai.definePrompt({
   input: { schema: BettingDataInputSchema },
   output: { schema: FormattedBetOutputSchema },
   prompt: `You are a sports betting expert. Your task is to reformat raw betting text into a structured HTML message for Telegram.
-
-You must extract the following:
-- The main event (the two teams playing).
-- The league or competition.
-- The two betting opportunities, including the bookmaker, the specific bet, and the odd.
-
-Format the output EXACTLY as shown in the example below, using <b>, <i>, and <code> tags.
+You must extract all the relevant information and format the output EXACTLY as shown in the example below, using emojis and <b> tags for emphasis.
+The final output must be a single string.
 
 **Example Output Format:**
-<b>⚽ Herrera FC vs San Francisco FC</b>
-<i>Panama LPF</i>
+<b>🚨 ORDEM DE ENTRADA — SUREBET (2 Vias)</b>
+📅 <b>Data:</b> <i>DD/MM/AAAA - HH:mm</i>
+🏆 <b>Liga:</b> <i>Nome da Liga</i>
+⚔️ <b>Evento:</b> <i>Time A vs Time B</i>
 
-<b>Aposta 1:</b> Bet365
-Acima 1 1º o período
-<b>ODD:</b> <code>1.975</code>
+🏠 <b>Bookmaker 1:</b> <i>Nome da Casa 1</i>
+🎯 <b>Aposta:</b> <i>Descrição da Aposta 1</i>
+📈 <b>Odd:</b> <code>ODD_1</code>
 
-<b>Aposta 2:</b> Pinnacle
-Abaixo 1 1º o período
-<b>ODD:</b> <code>2.100</code>
+🏠 <b>Bookmaker 2:</b> <i>Nome da Casa 2</i>
+🎯 <b>Aposta:</b> <i>Descrição da Aposta 2</i>
+📈 <b>Odd:</b> <code>ODD_2</code>
 
 ---
 
