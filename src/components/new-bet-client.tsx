@@ -12,15 +12,17 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Send, ClipboardPaste, CheckCircle } from 'lucide-react';
+import { Send, ClipboardPaste, CheckCircle, Loader2 } from 'lucide-react';
 import { Textarea } from './ui/textarea';
+import { sendToTelegram } from '@/lib/actions';
 
 export function NewBetClient() {
   const [betInfoText, setBetInfoText] = React.useState('');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { toast } = useToast();
 
-  const handlePublish = () => {
-    if (!betInfoText.trim()) {
+  const handlePublish = async () => {
+    if (!betInfoTinfo.trim()) {
       toast({
         title: 'Nenhuma informação fornecida',
         description: 'Por favor, cole as informações da aposta para publicar.',
@@ -29,21 +31,35 @@ export function NewBetClient() {
       return;
     }
 
-    // Aqui, no futuro, você adicionaria a lógica para enviar `betInfoText` para a API do Telegram.
-    console.log('Publicando no Telegram:', betInfoText);
+    setIsSubmitting(true);
+    
+    const formData = new FormData();
+    formData.append('text', betInfoText);
 
-    toast({
-      title: 'Publicado no Telegram!',
-      description: 'A surebet foi enviada com sucesso para o canal.',
-      action: (
-        <div className="p-2 rounded-full bg-green-500">
-          <CheckCircle className="text-white" />
-        </div>
-      ),
-    });
-    setBetInfoText(''); // Limpa a área de texto após a publicação
+    const result = await sendToTelegram(formData);
+
+    setIsSubmitting(false);
+
+    if (result.success) {
+      toast({
+        title: 'Publicado no Telegram!',
+        description: 'A surebet foi enviada com sucesso para o canal.',
+        action: (
+          <div className="p-2 rounded-full bg-green-500">
+            <CheckCircle className="text-white" />
+          </div>
+        ),
+      });
+      setBetInfoText('');
+    } else {
+      toast({
+        title: 'Erro ao Publicar',
+        description: result.message,
+        variant: 'destructive',
+      });
+    }
   };
-
+  
   const resetState = () => {
     setBetInfoText('');
   }
@@ -69,6 +85,7 @@ export function NewBetClient() {
           </div>
           <Textarea
             id="bet-info"
+            name="text"
             className="w-full min-h-[200px] font-code"
             placeholder={`Exemplo:
 2025-08-10 17:00	San Cristobal – Salcedo FC	Futebol / Dominican Republic - Liga Mayor
@@ -80,9 +97,14 @@ Bet365 (Full)	H2(−0.25) 1º o período	1.800`}
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-         <Button variant="ghost" onClick={resetState}>Limpar</Button>
-        <Button onClick={handlePublish} disabled={!betInfoText.trim()}>
-          <Send className="mr-2 h-4 w-4" /> Publicar no Telegram
+         <Button variant="ghost" onClick={resetState} disabled={isSubmitting}>Limpar</Button>
+        <Button onClick={handlePublish} disabled={!betInfoText.trim() || isSubmitting}>
+          {isSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Send className="mr-2 h-4 w-4" />
+          )}
+          {isSubmitting ? 'Publicando...' : 'Publicar no Telegram'}
         </Button>
       </CardFooter>
     </Card>
