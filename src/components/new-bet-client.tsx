@@ -14,26 +14,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import {
-  UploadCloud,
   Loader2,
   CheckCircle,
-  FileImage,
   X,
   Sparkles,
   Calculator,
   Send,
+  ClipboardPaste,
 } from 'lucide-react';
-import Image from 'next/image';
-import { extractAndNormalizeBetData } from '@/lib/actions';
+import { extractAndNormalizeBetDataFromText } from '@/lib/actions';
 import type { ValidateAndNormalizeBettingDataOutput } from '@/ai/flows/validate-and-normalize-betting-data';
-import { Separator } from './ui/separator';
+import { Textarea } from './ui/textarea';
 
-type Step = 'upload' | 'verifying' | 'edit' | 'calculated';
+type Step = 'paste' | 'verifying' | 'edit' | 'calculated';
 
 export function NewBetClient() {
-  const [step, setStep] = React.useState<Step>('upload');
-  const [file, setFile] = React.useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+  const [step, setStep] = React.useState<Step>('paste');
+  const [betInfoText, setBetInfoText] = React.useState('');
   const [extractedData, setExtractedData] =
     React.useState<ValidateAndNormalizeBettingDataOutput | null>(null);
   const [bet2Odds, setBet2Odds] = React.useState('');
@@ -46,27 +43,9 @@ export function NewBetClient() {
   } | null>(null);
   const { toast } = useToast();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setPreviewUrl(URL.createObjectURL(selectedFile));
-    }
-  };
-
-  const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const droppedFile = event.dataTransfer.files?.[0];
-    if (droppedFile) {
-      setFile(droppedFile);
-      setPreviewUrl(URL.createObjectURL(droppedFile));
-    }
-  };
-
   const resetState = () => {
-    setFile(null);
-    setPreviewUrl(null);
-    setStep('upload');
+    setBetInfoText('');
+    setStep('paste');
     setExtractedData(null);
     setBet2Odds('');
     setTotalStake('');
@@ -74,35 +53,30 @@ export function NewBetClient() {
   };
 
   const handleExtract = async () => {
-    if (!file) {
-      toast({ title: 'No file selected', description: 'Please upload a screenshot.', variant: 'destructive' });
+    if (!betInfoText.trim()) {
+      toast({ title: 'No information provided', description: 'Please paste the bet information.', variant: 'destructive' });
       return;
     }
 
     setStep('verifying');
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      const base64 = reader.result as string;
-      try {
-        const result = await extractAndNormalizeBetData(base64);
-        setExtractedData(result);
-        setStep('edit');
-        toast({
-          title: 'Extraction Successful',
-          description: 'Betting data has been extracted. Please verify.',
-        });
-      } catch (error) {
-        console.error(error);
-        toast({
-          title: 'Extraction Failed',
-          description: 'Could not extract data from the image.',
-          variant: 'destructive',
-        });
-        setStep('upload');
-      }
-    };
+    try {
+      const result = await extractAndNormalizeBetDataFromText(betInfoText);
+      setExtractedData(result);
+      setStep('edit');
+      toast({
+        title: 'Extraction Successful',
+        description: 'Betting data has been extracted. Please verify.',
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Extraction Failed',
+        description: 'Could not extract data from the provided text.',
+        variant: 'destructive',
+      });
+      setStep('paste');
+    }
   };
 
   const handleCalculateSurebet = () => {
@@ -149,44 +123,30 @@ export function NewBetClient() {
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Create a New Surebet</CardTitle>
         <CardDescription>
-          Upload a bet slip, verify the data, and calculate the surebet stakes.
+          Paste your bet slip information, verify the data, and calculate the surebet stakes.
         </CardDescription>
       </CardHeader>
       <CardContent className="min-h-[400px] flex flex-col justify-center items-center">
-        {step === 'upload' && (
-          <div
-            className="w-full p-10 border-2 border-dashed rounded-lg text-center cursor-pointer hover:border-primary transition-colors"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleFileDrop}
-            onClick={() => document.getElementById('file-upload')?.click()}
-          >
-            <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
-            <p className="mt-4 font-semibold text-primary">
-              Click to upload or drag and drop
-            </p>
-            <p className="text-sm text-muted-foreground">
-              PNG, JPG, or GIF (max 10MB)
-            </p>
-            <Input id="file-upload" type="file" className="hidden" onChange={handleFileChange} accept="image/*" />
-          </div>
-        )}
-
-        {(step === 'upload' && previewUrl) && (
-            <div className="mt-4 w-full">
-              <h3 className="font-semibold mb-2">Image Preview:</h3>
-              <div className="relative group w-full max-w-md mx-auto">
-                <Image src={previewUrl} alt="Bet slip preview" width={600} height={400} className="rounded-lg object-contain" />
-                <Button variant="destructive" size="icon" className="absolute -top-2 -right-2 rounded-full h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => { setFile(null); setPreviewUrl(null); }}>
-                    <X className="h-4 w-4" />
-                </Button>
-              </div>
+        {step === 'paste' && (
+          <div className="w-full p-4 space-y-4">
+             <div className="flex items-center gap-2 text-muted-foreground">
+                <ClipboardPaste className="h-5 w-5" />
+                <Label htmlFor="bet-info" className="font-semibold">Paste Bet Information</Label>
             </div>
+            <Textarea
+              id="bet-info"
+              className="w-full min-h-[200px] font-code"
+              placeholder={`2025-08-10 17:00\tSan Cristobal – Salcedo FC\tFutebol / Dominican Republic - Liga Mayor\nPinnacle (BR)\tH1(+0.25) 1º o período\t2.370\t0.0\t2.370\t151.00\t0\tBRL\t7.87\t2.30%\nBet365 (Full)\tH2(−0.25) 1º o período\t1.800\t0.0\t1.800\t199.00\t0\tBRL\t8.20\n\t\t\t\t\t350\t\tBRL`}
+              value={betInfoText}
+              onChange={(e) => setBetInfoText(e.target.value)}
+            />
+          </div>
         )}
 
         {step === 'verifying' && (
           <div className="flex flex-col items-center gap-4 text-muted-foreground">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
-            <p className="font-semibold text-lg">Analyzing Screenshot...</p>
+            <p className="font-semibold text-lg">Analyzing Information...</p>
             <p>Our AI is extracting the betting information. Please wait.</p>
           </div>
         )}
@@ -194,7 +154,7 @@ export function NewBetClient() {
         {(step === 'edit' || step === 'calculated') && extractedData && (
           <div className="w-full grid md:grid-cols-2 gap-6">
             <div>
-              <Label className="font-semibold text-primary">Bet 1 (from Screenshot)</Label>
+              <Label className="font-semibold text-primary">Bet 1 (from Pasted Text)</Label>
               <div className="space-y-2 mt-2 p-4 border rounded-lg bg-secondary/50">
                 <p><strong>Game:</strong> {extractedData.game}</p>
                 <p><strong>Team 1:</strong> {extractedData.team1}</p>
@@ -231,8 +191,8 @@ export function NewBetClient() {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="ghost" onClick={resetState}>Reset</Button>
-        {step === 'upload' && file && (
-          <Button onClick={handleExtract}>
+        {step === 'paste' && (
+          <Button onClick={handleExtract} disabled={!betInfoText.trim()}>
             <Sparkles className="mr-2 h-4 w-4" /> Extract Data
           </Button>
         )}

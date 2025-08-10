@@ -1,23 +1,16 @@
 'use server';
 
-import { extractBettingInfo } from '@/ai/flows/extract-betting-info-from-screenshot';
+import { extractBettingInfoFromText } from '@/ai/flows/extract-betting-info-from-text';
 import {
   validateAndNormalizeBettingData,
   type ValidateAndNormalizeBettingDataInput,
 } from '@/ai/flows/validate-and-normalize-betting-data';
 import { z } from 'zod';
 
-const DataUriSchema = z.string().refine(
-  (val) => val.startsWith('data:image/'),
-  { message: 'Invalid data URI for image' }
-);
-
-export async function extractAndNormalizeBetData(dataUri: string) {
-  DataUriSchema.parse(dataUri);
-
-  // Step 1: Extract initial info from the screenshot
-  const extractedInfo = await extractBettingInfo({
-    screenshotDataUri: dataUri,
+export async function extractAndNormalizeBetDataFromText(bettingText: string) {
+  // Step 1: Extract initial info from the text
+  const extractedInfo = await extractBettingInfoFromText({
+    bettingInfo: bettingText,
   });
 
   // Step 2: Prepare data for validation and normalization
