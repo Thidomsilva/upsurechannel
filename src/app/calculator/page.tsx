@@ -1,5 +1,15 @@
+import * as React from 'react';
 import { CalculatorClient } from '@/components/calculator-client';
 import { Icons } from '@/components/icons';
+import { Loader2 } from 'lucide-react';
+
+function CalculatorLoading() {
+  return (
+    <div className="flex h-96 w-full items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
+}
 
 export default function CalculatorPage() {
   return (
@@ -10,7 +20,9 @@ export default function CalculatorPage() {
           CanalUpsure
         </span>
       </div>
-      <CalculatorClient />
+       <React.Suspense fallback={<CalculatorLoading />}>
+        <CalculatorClient />
+      </React.Suspense>
     </main>
   );
 }
