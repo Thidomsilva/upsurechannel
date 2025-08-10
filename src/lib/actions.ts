@@ -1,6 +1,6 @@
 'use server';
 
-import { extractBettingData } from '@/ai/flows/format-bet-for-telegram';
+import { extractBettingData } from '@/lib/ai';
 import { extractOddsFromText } from './actions-client';
 import { z } from 'zod';
 

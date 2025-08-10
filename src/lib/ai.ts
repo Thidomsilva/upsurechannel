@@ -1,14 +1,10 @@
-'use server';
 /**
- * @fileOverview A betting data extraction AI agent.
- *
- * - extractBettingData - A function that takes raw betting data and extracts structured information.
- * - BettingDataInput - The input type for the extractBettingData function.
- * - ExtractedBettingData - The output type for the extractBettingData function.
+ * @fileOverview AI-related functionalities, including data extraction from betting text.
+ * This file does NOT use 'use server' because it exports non-async objects (Zod schemas),
+ * which is not allowed in server-only files by Next.js.
  */
-
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 export const BettingDataInputSchema = z.object({
   bettingData: z
@@ -42,7 +38,6 @@ Raw Text:
 '''
 `,
 });
-
 
 export async function extractBettingData(input: BettingDataInput): Promise<ExtractedBettingData> {
   const { output } = await extractBetPrompt(input);
