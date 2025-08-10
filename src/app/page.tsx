@@ -13,10 +13,19 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Icons } from '@/components/icons';
+import { Calculator } from 'lucide-react';
 
 export default function LoginPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
+      <div className="absolute right-4 top-4">
+        <Button asChild variant="outline">
+          <Link href="/calculator">
+            <Calculator className="mr-2 h-4 w-4" />
+            Calculadora
+          </Link>
+        </Button>
+      </div>
       <div className="w-full max-w-md">
         <Card className="shadow-2xl">
           <CardHeader className="text-center">

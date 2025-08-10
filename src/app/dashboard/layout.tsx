@@ -17,6 +17,7 @@ import {
   PlusSquare,
   History,
   CircleUser,
+  Calculator,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -79,6 +80,18 @@ export default function DashboardLayout({
                 <Link href="/dashboard/history">
                   <History />
                   <span>Histórico</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={isActive('/calculator')}
+                tooltip="Calculadora"
+              >
+                <Link href="/calculator">
+                  <Calculator />
+                  <span>Calculadora</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
