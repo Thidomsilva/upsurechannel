@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Calculator, CheckCircle, ClipboardPaste, Loader2 } from 'lucide-react';
+import { Calculator, CheckCircle, ClipboardPaste, Loader2, Wand2 } from 'lucide-react';
 import { Textarea } from './ui/textarea';
-import { sendToTelegram } from '@/lib/actions';
+import { sendToTelegram, extractOddsFromText } from '@/lib/actions';
 import { Input } from './ui/input';
 
 export function NewBetClient() {
@@ -22,7 +22,27 @@ export function NewBetClient() {
   const [odds1, setOdds1] = React.useState('');
   const [odds2, setOdds2] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isExtracting, setIsExtracting] = React.useState(false);
   const { toast } = useToast();
+
+  const handleTextChange = async (text: string) => {
+    setBetInfoText(text);
+    if (text.trim().length > 20) { // Basic check to avoid running on every keystroke
+      setIsExtracting(true);
+      const result = await extractOddsFromText(text);
+      if ('odds1' in result) {
+        setOdds1(result.odds1.toString());
+        setOdds2(result.odds2.toString());
+      } else {
+        toast({
+          title: 'Erro da IA',
+          description: result.error,
+          variant: 'destructive',
+        });
+      }
+      setIsExtracting(false);
+    }
+  }
 
   const handlePublish = async () => {
     if (!betInfoText.trim() || !odds1.trim() || !odds2.trim()) {
@@ -72,7 +92,7 @@ export function NewBetClient() {
     setOdds2('');
   };
 
-  const canSubmit = betInfoText.trim() && odds1.trim() && odds2.trim() && !isSubmitting;
+  const canSubmit = betInfoText.trim() && odds1.trim() && odds2.trim() && !isSubmitting && !isExtracting;
 
 
   return (
@@ -82,9 +102,7 @@ export function NewBetClient() {
           Publicar Nova Surebet com Calculadora
         </CardTitle>
         <CardDescription>
-          Cole o texto da surebet, insira as duas odds principais e o sistema
-          enviará a aposta com um link de calculadora para o seu canal do
-          Telegram.
+          Cole o texto da surebet abaixo. A IA irá extrair as odds e preencher os campos. Depois, é só enviar para seu canal do Telegram.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
@@ -104,39 +122,46 @@ export function NewBetClient() {
 Pinnacle (BR)	H1(+0.25) 1º o período	2.370
 Bet365 (Full)	H2(−0.25) 1º o período	1.800`}
             value={betInfoText}
-            onChange={(e) => setBetInfoText(e.target.value)}
+            onChange={(e) => handleTextChange(e.target.value)}
           />
         </div>
         <div className="space-y-2">
-           <Label className="font-semibold">2. Insira as Odds</Label>
+           <div className='flex items-center gap-2 text-muted-foreground'>
+             <Wand2 className="h-5 w-5" />
+             <Label className="font-semibold">2. Odds Extraídas pela IA</Label>
+           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
+            <div className="space-y-1 relative">
               <Label htmlFor="odds1">Odd 1</Label>
               <Input
                 id="odds1"
                 name="odds1"
                 type="number"
-                placeholder="Ex: 2.370"
+                placeholder="Aguardando texto..."
                 value={odds1}
                 onChange={(e) => setOdds1(e.target.value)}
+                disabled={isExtracting}
               />
+               {isExtracting && <Loader2 className="absolute right-3 top-8 h-4 w-4 animate-spin" />}
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1 relative">
               <Label htmlFor="odds2">Odd 2</Label>
               <Input
                 id="odds2"
                 name="odds2"
                 type="number"
-                placeholder="Ex: 1.800"
+                placeholder="Aguardando texto..."
                 value={odds2}
                 onChange={(e) => setOdds2(e.target.value)}
+                disabled={isExtracting}
               />
+              {isExtracting && <Loader2 className="absolute right-3 top-8 h-4 w-4 animate-spin" />}
             </div>
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="ghost" onClick={resetState} disabled={isSubmitting}>
+        <Button variant="ghost" onClick={resetState} disabled={isSubmitting || isExtracting}>
           Limpar
         </Button>
         <Button onClick={handlePublish} disabled={!canSubmit}>

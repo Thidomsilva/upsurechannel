@@ -1,5 +1,6 @@
 'use server';
 
+import { validateAndNormalizeBettingData, type BettingDataInput } from '@/ai/flows/validate-and-normalize-betting-data';
 import { z } from 'zod';
 
 const sendToTelegramSchema = z.object({
@@ -71,4 +72,19 @@ Clique no link abaixo para abrir a nossa calculadora com estas odds já preenchi
     const errorMessage = error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.';
     return { success: false, message: errorMessage };
   }
+}
+
+
+export async function extractOddsFromText(bettingData: string): Promise<{ odds1: number, odds2: number } | { error: string }> {
+    if (!bettingData.trim()) {
+        return { error: 'O texto da aposta está vazio.' };
+    }
+    try {
+        const input: BettingDataInput = { bettingData };
+        const result = await validateAndNormalizeBettingData(input);
+        return { odds1: result.odds1, odds2: result.odds2 };
+    } catch (error) {
+        console.error('AI Error:', error);
+        return { error: 'A IA não conseguiu extrair as odds. Verifique o texto ou a chave de API.' };
+    }
 }
