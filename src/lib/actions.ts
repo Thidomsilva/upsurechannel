@@ -17,8 +17,13 @@ export async function sendToTelegram(formData: FormData) {
     });
 
     const { text, odds1, odds2 } = validatedData;
+    
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    if (!baseUrl) {
+      throw new Error('A variável de ambiente NEXT_PUBLIC_BASE_URL não está configurada.');
+    }
 
-    const calculatorUrl = `https://www.surebet.com/calculator?odds-1=${odds1}&odds-2=${odds2}`;
+    const calculatorUrl = `${baseUrl}/calculator?odds1=${odds1}&odds2=${odds2}`;
 
     const message = `
 ${text}
@@ -26,7 +31,7 @@ ${text}
 ---
 
 👇 **Calcule sua entrada com qualquer valor!** 👇
-Clique no link abaixo para abrir a calculadora com estas odds já preenchidas:
+Clique no link abaixo para abrir a nossa calculadora com estas odds já preenchidas:
 <a href="${calculatorUrl}">Calculadora de Surebet</a>
 `;
 
@@ -45,7 +50,7 @@ Clique no link abaixo para abrir a calculadora com estas odds já preenchidas:
         chat_id: chatId,
         text: message,
         parse_mode: 'HTML',
-        disable_web_page_preview: true,
+        disable_web_page_preview: false,
       }),
     });
 
