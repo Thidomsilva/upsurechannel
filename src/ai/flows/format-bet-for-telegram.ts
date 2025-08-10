@@ -24,7 +24,7 @@ const formatBetPrompt = ai.definePrompt({
   output: { schema: FormattedBetOutputSchema },
   prompt: `You are a sports betting expert. Your task is to reformat raw betting text into a structured HTML message for Telegram.
 You must extract all the relevant information and format the output EXACTLY as shown in the example below, using emojis and <b> tags for emphasis.
-The final output must be a single string.
+The final output must be a single string. The Stake and Total values should NOT be included in the output.
 
 **Example Output Format:**
 <b>🚨 ORDEM DE ENTRADA — SUREBET (2 Vias)</b>
