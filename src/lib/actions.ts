@@ -1,32 +1,27 @@
 'use server';
 
-import { extractOddsFromText } from '@/ai/flows/extract-odds';
 import { z } from 'zod';
 
 const sendToTelegramSchema = z.object({
-  text: z.string(),
+  text: z.string().min(1, 'O texto da aposta não pode estar vazio.'),
+  odds1: z.string().refine(val => !isNaN(parseFloat(val)), { message: 'Odd 1 deve ser um número.' }),
+  odds2: z.string().refine(val => !isNaN(parseFloat(val)), { message: 'Odd 2 deve ser um número.' }),
 });
 
 export async function sendToTelegram(formData: FormData) {
   try {
-    const text = formData.get('text') as string;
-    const validatedData = sendToTelegramSchema.parse({ text });
-
-    // 1. Extrair as odds usando a nova IA
-    const { odds1, odds2 } = await extractOddsFromText({
-      bettingInfo: validatedData.text,
+    const validatedData = sendToTelegramSchema.parse({
+      text: formData.get('text'),
+      odds1: formData.get('odds1'),
+      odds2: formData.get('odds2'),
     });
 
-    if (!odds1 || !odds2) {
-      throw new Error('Não foi possível extrair as odds do texto fornecido. Por favor, verifique o formato.');
-    }
+    const { text, odds1, odds2 } = validatedData;
 
-    // 2. Construir o link para a calculadora
     const calculatorUrl = `https://www.surebet.com/calculator?odds-1=${odds1}&odds-2=${odds2}`;
 
-    // 3. Montar a mensagem final
     const message = `
-${validatedData.text}
+${text}
 
 ---
 
@@ -50,7 +45,7 @@ Clique no link abaixo para abrir a calculadora com estas odds já preenchidas:
         chat_id: chatId,
         text: message,
         parse_mode: 'HTML',
-        disable_web_page_preview: true, // Para não poluir a mensagem com o preview do site
+        disable_web_page_preview: true,
       }),
     });
 
@@ -65,7 +60,8 @@ Clique no link abaixo para abrir a calculadora com estas odds já preenchidas:
   } catch (error) {
     console.error(error);
     if (error instanceof z.ZodError) {
-      return { success: false, message: 'Validação falhou', errors: error.errors };
+      const formattedErrors = error.errors.map(e => e.message).join('\n');
+      return { success: false, message: `Erro de validação:\n${formattedErrors}` };
     }
     const errorMessage = error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.';
     return { success: false, message: errorMessage };
