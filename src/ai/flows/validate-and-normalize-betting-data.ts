@@ -30,7 +30,9 @@ export async function validateAndNormalizeBettingData(input: BettingDataInput): 
     output: { schema: BettingDataOutputSchema },
     prompt: `You are a data normalization expert for sports betting.
 Your task is to extract the two distinct decimal odds from the provided text.
-The odds are decimal numbers, usually with 2 or 3 decimal places.
+The odds are decimal numbers, usually with 2 or 3 decimal places. They typically appear immediately after the description of the bet type.
+Ignore any other numbers like percentages or monetary values that might appear at the end of the line.
+
 Return the two odds you find.
 
 Betting Data:
