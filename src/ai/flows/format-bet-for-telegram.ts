@@ -22,21 +22,16 @@ const formatBetPrompt = ai.definePrompt({
   name: 'formatBetPrompt',
   input: { schema: BettingDataInputSchema },
   output: { schema: FormattedBetOutputSchema },
-  prompt: `You are a sports betting expert who creates clean, easy-to-read Telegram messages.
-Your task is to reformat the user's raw betting text into a structured HTML message.
+  prompt: `You are a sports betting expert. Your task is to reformat raw betting text into a structured HTML message for Telegram.
 
-You must extract the following information and format it exactly like the example:
-- The main event (e.g., the two teams playing).
+You must extract the following:
+- The main event (the two teams playing).
 - The league or competition.
 - The two betting opportunities, including the bookmaker, the specific bet, and the odd.
 
-Use the following HTML tags:
-- <b> for bold text.
-- <i> for italic text.
-- <code> for fixed-width text (for odds).
-- New lines to separate sections.
+Format the output EXACTLY as shown in the example below, using <b>, <i>, and <code> tags.
 
-Example of the desired output format:
+**Example Output Format:**
 <b>⚽ Herrera FC vs San Francisco FC</b>
 <i>Panama LPF</i>
 
@@ -50,7 +45,9 @@ Abaixo 1 1º o período
 
 ---
 
-Here is the raw text to format:
+Now, format the following text. Respond only with the formatted HTML.
+
+Raw Text:
 '''
 {{{bettingData}}}
 '''
