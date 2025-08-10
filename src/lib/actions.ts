@@ -49,12 +49,14 @@ export async function sendToTelegram(formData: FormData) {
     }
 
     // 4. Construct calculator URL, now with bookmaker names
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
-    const calculatorUrl = `${baseUrl}/calculator?odds1=${numOdds1}&odds2=${numOdds2}&bookmaker1=${encodeURIComponent(extractedData.bookmaker1)}&bookmaker2=${encodeURIComponent(extractedData.bookmaker2)}`;
-
-    // 5. Add calculator link to the footer
-    footer += `\n\n👇 <b>Calcule sua entrada com qualquer valor!</b>
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    if (baseUrl) {
+      const calculatorUrl = `${baseUrl}/calculator?odds1=${numOdds1}&odds2=${numOdds2}&bookmaker1=${encodeURIComponent(extractedData.bookmaker1)}&bookmaker2=${encodeURIComponent(extractedData.bookmaker2)}`;
+       // 5. Add calculator link to the footer
+      footer += `\n\n👇 <b>Calcule sua entrada com qualquer valor!</b>
 <a href="${calculatorUrl}">ABRIR CALCULADORA DE SUREBET</a>`;
+    }
+
 
     // 6. Build the final message
     const message = `${mainMessage}${footer}`;
