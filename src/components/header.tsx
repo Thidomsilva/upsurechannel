@@ -74,17 +74,17 @@ export function Header({ breadcrumbs = [], pageTitle }: HeaderProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
-            Settings
+            Configurações
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href="/">
               <LogOut className="mr-2 h-4 w-4" />
-              Logout
+              Sair
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>

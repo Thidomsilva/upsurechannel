@@ -33,8 +33,8 @@ import {
 } from './ui/card';
 
 const getBadgeVariant = (status: Bet['status']) => {
-  if (status === 'Won') return 'default';
-  if (status === 'Lost') return 'destructive';
+  if (status === 'Ganha') return 'default';
+  if (status === 'Perdida') return 'destructive';
   return 'secondary';
 };
 
@@ -57,13 +57,13 @@ export function HistoryClient({ initialBets }: { initialBets: Bet[] }) {
             losingBet.stake;
 
           toast({
-            title: 'Bet Settled!',
-            description: `Profit of $${profit.toFixed(2)} has been recorded.`,
+            title: 'Aposta Liquidada!',
+            description: `Lucro de $${profit.toFixed(2)} foi registrado.`,
           });
 
           return {
             ...bet,
-            status: 'Won',
+            status: 'Ganha',
             profit: profit,
             winningTeam: winningTeam === 'team1' ? bet.team1 : bet.team2,
           };
@@ -76,9 +76,9 @@ export function HistoryClient({ initialBets }: { initialBets: Bet[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Betting History</CardTitle>
+        <CardTitle className="font-headline">Histórico de Apostas</CardTitle>
         <CardDescription>
-          A comprehensive log of all your past betting activities.
+          Um registro completo de todas as suas atividades de apostas passadas.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -86,11 +86,11 @@ export function HistoryClient({ initialBets }: { initialBets: Bet[] }) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Game</TableHead>
-                <TableHead>Bet Details</TableHead>
+                <TableHead>Jogo</TableHead>
+                <TableHead>Detalhes da Aposta</TableHead>
                 <TableHead className="text-right">Status</TableHead>
-                <TableHead className="text-right">Profit</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">Lucro</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -126,46 +126,46 @@ export function HistoryClient({ initialBets }: { initialBets: Bet[] }) {
                       bet.profit >= 0 ? 'text-green-600' : 'text-red-600'
                     }`}
                   >
-                    {bet.status !== 'Pending'
+                    {bet.status !== 'Pendente'
                       ? `${bet.profit >= 0 ? '+' : ''}$${bet.profit.toFixed(2)}`
                       : 'N/A'}
                   </TableCell>
                   <TableCell className="text-right">
-                    {bet.status === 'Pending' ? (
+                    {bet.status === 'Pendente' ? (
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button size="sm" variant="outline">
-                            Settle
+                            Liquidar
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
-                              Settle Bet: {bet.game}
+                              Liquidar Aposta: {bet.game}
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Please select the winning team to calculate the
-                              profit and settle this bet.
+                              Por favor, selecione a equipe vencedora para calcular o
+                              lucro e liquidar esta aposta.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => handleSettleBet(bet.id, 'team2')}
                             >
-                              {bet.team2} Won
+                              {bet.team2} Venceu
                             </AlertDialogAction>
                              <AlertDialogAction
                               onClick={() => handleSettleBet(bet.id, 'team1')}
                             >
-                              {bet.team1} Won
+                              {bet.team1} Venceu
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
                     ) : (
                       <span className="text-sm text-muted-foreground">
-                        Settled
+                        Liquidado
                       </span>
                     )}
                   </TableCell>

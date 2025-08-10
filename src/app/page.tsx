@@ -27,7 +27,7 @@ export default function LoginPage() {
               CanalUpsure
             </CardTitle>
             <CardDescription>
-              Welcome back! Please enter your credentials to login.
+              Bem-vindo de volta! Por favor, insira suas credenciais para fazer login.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -35,10 +35,10 @@ export default function LoginPage() {
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" placeholder="name@example.com" type="email" />
+                  <Input id="email" placeholder="nome@exemplo.com" type="email" />
                 </div>
                 <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Senha</Label>
                   <Input id="password" placeholder="••••••••" type="password" />
                 </div>
               </div>
@@ -50,7 +50,7 @@ export default function LoginPage() {
             </Button>
             <div className="text-center text-sm">
               <Link href="#" className="underline">
-                Forgot your password?
+                Esqueceu sua senha?
               </Link>
             </div>
           </CardFooter>

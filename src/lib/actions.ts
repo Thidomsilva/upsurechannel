@@ -26,7 +26,7 @@ export async function extractAndNormalizeBetDataFromText(bettingText: string) {
   const normalizedData = await validateAndNormalizeBettingData(validationInput);
 
   if (!normalizedData.game || !normalizedData.team1 || !normalizedData.team2) {
-    throw new Error("Failed to normalize game and team data.");
+    throw new Error("Falha ao normalizar os dados do jogo e da equipe.");
   }
 
   return normalizedData;

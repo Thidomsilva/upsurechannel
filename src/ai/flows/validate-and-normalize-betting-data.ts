@@ -12,24 +12,24 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ValidateAndNormalizeBettingDataInputSchema = z.object({
-  game: z.string().optional().describe('The name of the game or event.'),
-  team1: z.string().optional().describe('The name of the first team or participant.'),
-  team2: z.string().optional().describe('The name of the second team or participant.'),
-  odds1: z.string().optional().describe('The odds for the first team or participant.'),
-  odds2: z.string().optional().describe('The odds for the second team or participant.'),
-  stake: z.string().optional().describe('The stake amount.'),
-  bookmaker: z.string().optional().describe('The name of the bookmaker.'),
+  game: z.string().optional().describe('O nome do jogo ou evento.'),
+  team1: z.string().optional().describe('O nome da primeira equipa ou participante.'),
+  team2: z.string().optional().describe('O nome da segunda equipa ou participante.'),
+  odds1: z.string().optional().describe('As odds para a primeira equipa ou participante.'),
+  odds2: z.string().optional().describe('As odds para a segunda equipa ou participante.'),
+  stake: z.string().optional().describe('O montante da aposta.'),
+  bookmaker: z.string().optional().describe('O nome da casa de apostas.'),
 });
 export type ValidateAndNormalizeBettingDataInput = z.infer<typeof ValidateAndNormalizeBettingDataInputSchema>;
 
 const ValidateAndNormalizeBettingDataOutputSchema = z.object({
-  game: z.string().describe('The validated and normalized name of the game or event.'),
-  team1: z.string().describe('The validated and normalized name of the first team or participant.'),
-  team2: z.string().describe('The validated and normalized name of the second team or participant.'),
-  odds1: z.number().describe('The validated and normalized odds for the first team or participant.'),
-  odds2: z.number().describe('The validated and normalized odds for the second team or participant.'),
-  stake: z.number().describe('The validated and normalized stake amount.'),
-  bookmaker: z.string().describe('The validated and normalized name of the bookmaker.'),
+  game: z.string().describe('O nome validado e normalizado do jogo ou evento.'),
+  team1: z.string().describe('O nome validado e normalizado da primeira equipa ou participante.'),
+  team2: z.string().describe('O nome validado e normalizado da segunda equipa ou participante.'),
+  odds1: z.number().describe('As odds validadas e normalizadas para a primeira equipa ou participante.'),
+  odds2: z.number().describe('As odds validadas e normalizadas para a segunda equipa ou participante.'),
+  stake: z.number().describe('O montante validado e normalizado da aposta.'),
+  bookmaker: z.string().describe('O nome validado e normalizado da casa de apostas.'),
 });
 export type ValidateAndNormalizeBettingDataOutput = z.infer<typeof ValidateAndNormalizeBettingDataOutputSchema>;
 
@@ -43,25 +43,25 @@ const prompt = ai.definePrompt({
   name: 'validateAndNormalizeBettingDataPrompt',
   input: {schema: ValidateAndNormalizeBettingDataInputSchema},
   output: {schema: ValidateAndNormalizeBettingDataOutputSchema},
-  prompt: `You are an expert betting data validator and normalizer. You will receive betting data extracted from an OCR process, which may contain missing or incorrect information. Your task is to validate the provided data, fill in any missing fields, and normalize the data types.  Specifically:
+  prompt: `Você é um especialista em validação e normalização de dados de apostas. Você receberá dados de apostas extraídos de um processo de OCR, que podem conter informações ausentes ou incorretas. Sua tarefa é validar os dados fornecidos, preencher quaisquer campos ausentes e normalizar os tipos de dados. Especificamente:
 
-1.  Ensure that odds1 and odds2 are valid numbers.
-2.  Ensure that stake is a valid number.
-3.  If any fields are missing, use your knowledge to fill them based on the available information.  Be as accurate as possible.
+1.  Garanta que odds1 e odds2 sejam números válidos.
+2.  Garanta que a aposta seja um número válido.
+3.  Se algum campo estiver ausente, use seu conhecimento para preenchê-lo com base nas informações disponíveis. Seja o mais preciso possível.
 
-Here is the betting data:
+Aqui estão os dados da aposta:
 
-Game: {{{game}}}
-Team 1: {{{team1}}}
-Team 2: {{{team2}}}
+Jogo: {{{game}}}
+Equipa 1: {{{team1}}}
+Equipa 2: {{{team2}}}
 Odds 1: {{{odds1}}}
 Odds 2: {{{odds2}}}
-Stake: {{{stake}}}
-Bookmaker: {{{bookmaker}}}
+Aposta: {{{stake}}}
+Casa de Apostas: {{{bookmaker}}}
 
-Return the validated and normalized data in JSON format.
-Ensure that odds1, odds2, and stake are returned as numbers.
-If any information cannot be determined, return an empty string for string fields and 0 for number fields.
+Retorne os dados validados e normalizados em formato JSON.
+Garanta que odds1, odds2 e aposta sejam retornados como números.
+Se alguma informação não puder ser determinada, retorne uma string vazia para campos de string e 0 para campos numéricos.
 `,
 });
 

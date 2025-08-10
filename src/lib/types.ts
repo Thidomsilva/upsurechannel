@@ -13,7 +13,7 @@ export type Bet = {
     odds: number;
     stake: number;
   };
-  status: 'Pending' | 'Won' | 'Lost';
+  status: 'Pendente' | 'Ganha' | 'Perdida';
   profit: number;
   date: string;
   winningTeam?: string;

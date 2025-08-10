@@ -50,11 +50,11 @@ export default function DashboardLayout({
               <SidebarMenuButton
                 asChild
                 isActive={isActive('/dashboard')}
-                tooltip="Dashboard"
+                tooltip="Painel"
               >
                 <Link href="/dashboard">
                   <LayoutDashboard />
-                  <span>Dashboard</span>
+                  <span>Painel</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -62,11 +62,11 @@ export default function DashboardLayout({
               <SidebarMenuButton
                 asChild
                 isActive={isActive('/dashboard/new-bet')}
-                tooltip="New Bet"
+                tooltip="Nova Aposta"
               >
                 <Link href="/dashboard/new-bet">
                   <PlusSquare />
-                  <span>New Bet</span>
+                  <span>Nova Aposta</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -74,11 +74,11 @@ export default function DashboardLayout({
               <SidebarMenuButton
                 asChild
                 isActive={isActive('/dashboard/history')}
-                tooltip="History"
+                tooltip="Histórico"
               >
                 <Link href="/dashboard/history">
                   <History />
-                  <span>History</span>
+                  <span>Histórico</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -94,7 +94,7 @@ export default function DashboardLayout({
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="text-sm font-medium">Admin User</span>
+              <span className="text-sm font-medium">Usuário Admin</span>
               <span className="text-xs text-muted-foreground">
                 admin@canalupsure.com
               </span>

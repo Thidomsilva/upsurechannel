@@ -35,17 +35,17 @@ import {
 import type { Bet } from '@/lib/types';
 
 const chartData = [
-  { month: 'January', profit: 186 },
-  { month: 'February', profit: 305 },
-  { month: 'March', profit: 237 },
-  { month: 'April', profit: 73 },
-  { month: 'May', profit: 209 },
-  { month: 'June', profit: 214 },
+  { month: 'Janeiro', profit: 186 },
+  { month: 'Fevereiro', profit: 305 },
+  { month: 'Março', profit: 237 },
+  { month: 'Abril', profit: 73 },
+  { month: 'Maio', profit: 209 },
+  { month: 'Junho', profit: 214 },
 ];
 
 const chartConfig = {
   profit: {
-    label: 'Profit',
+    label: 'Lucro',
     color: 'hsl(var(--primary))',
   },
 };
@@ -56,13 +56,13 @@ export function DashboardClient({ recentBets }: { recentBets: Bet[] }) {
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Profit</CardTitle>
+            <CardTitle className="text-sm font-medium">Lucro Total</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">$45,231.89</div>
             <p className="text-xs text-muted-foreground">
-              +20.1% from last month
+              +20.1% do último mês
             </p>
           </CardContent>
         </Card>
@@ -74,31 +74,31 @@ export function DashboardClient({ recentBets }: { recentBets: Bet[] }) {
           <CardContent>
             <div className="text-2xl font-bold">+12.34%</div>
             <p className="text-xs text-muted-foreground">
-              +2.1% from last month
+              +2.1% do último mês
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Bets</CardTitle>
+            <CardTitle className="text-sm font-medium">Apostas Ativas</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+57</div>
             <p className="text-xs text-muted-foreground">
-              +1 since last hour
+              +1 desde a última hora
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Settled</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Liquidado</CardTitle>
             <Archive className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+12,234</div>
             <p className="text-xs text-muted-foreground">
-              +19% from last month
+              +19% do último mês
             </p>
           </CardContent>
         </Card>
@@ -107,9 +107,9 @@ export function DashboardClient({ recentBets }: { recentBets: Bet[] }) {
         <Card className="xl:col-span-2">
           <CardHeader className="flex flex-row items-center">
             <div className="grid gap-2">
-              <CardTitle className="font-headline">Profit Overview</CardTitle>
+              <CardTitle className="font-headline">Visão Geral de Lucros</CardTitle>
               <CardDescription>
-                Monthly profit from betting activities.
+                Lucro mensal das atividades de apostas.
               </CardDescription>
             </div>
           </CardHeader>
@@ -135,9 +135,9 @@ export function DashboardClient({ recentBets }: { recentBets: Bet[] }) {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="font-headline">Recent Bets</CardTitle>
+            <CardTitle className="font-headline">Apostas Recentes</CardTitle>
             <CardDescription>
-              A log of the most recently created surebets.
+              Um registro das surebets criadas mais recentemente.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-8">

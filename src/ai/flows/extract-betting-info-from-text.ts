@@ -13,15 +13,15 @@ import {z} from 'genkit';
 const ExtractBettingInfoFromTextInputSchema = z.object({
   bettingInfo: z
     .string()
-    .describe('A string containing betting information, likely pasted by a user.'),
+    .describe('Uma string contendo informações de aposta, provavelmente colada por um usuário.'),
 });
 export type ExtractBettingInfoFromTextInput = z.infer<typeof ExtractBettingInfoFromTextInputSchema>;
 
 const ExtractBettingInfoFromTextOutputSchema = z.object({
-  gameDetails: z.string().describe('Details of the game, including teams and date/time.'),
-  odds: z.number().describe('The betting odds.'),
-  stake: z.number().describe('The amount staked on the bet.'),
-  predictedWinning: z.number().describe('The predicted winning amount for the bet.'),
+  gameDetails: z.string().describe('Detalhes do jogo, incluindo equipas e data/hora.'),
+  odds: z.number().describe('As odds da aposta.'),
+  stake: z.number().describe('O montante apostado na aposta.'),
+  predictedWinning: z.number().describe('O montante previsto de ganho para a aposta.'),
 });
 export type ExtractBettingInfoFromTextOutput = z.infer<typeof ExtractBettingInfoFromTextOutputSchema>;
 
@@ -33,14 +33,14 @@ const prompt = ai.definePrompt({
   name: 'extractBettingInfoFromTextPrompt',
   input: {schema: ExtractBettingInfoFromTextInputSchema},
   output: {schema: ExtractBettingInfoFromTextOutputSchema},
-  prompt: `You are an expert at extracting betting information from raw text.
+  prompt: `Você é um especialista em extrair informações de apostas de texto bruto.
 
-  Analyze the following text from a betting slip and extract the relevant information, including game details, odds, and stake information. The user will provide one of the bets, your job is to extract the main information from that one. Focus on the first bet listed.
+  Analise o seguinte texto de um boletim de apostas e extraia as informações relevantes, incluindo detalhes do jogo, odds e informações da aposta. O usuário fornecerá uma das apostas, seu trabalho é extrair as informações principais dessa. Concentre-se na primeira aposta listada.
 
-  Betting Info:
+  Informações da Aposta:
   {{{bettingInfo}}}
 
-  Return the extracted information in a structured format.
+  Retorne as informações extraídas em um formato estruturado.
   `,
 });
 

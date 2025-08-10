@@ -13,7 +13,7 @@ async function getRecentBets(): Promise<Bet[]> {
       bet1: { bookmaker: 'BetMGM', odds: 1.9, stake: 525.61 },
       bet2: { bookmaker: 'FanDuel', odds: 2.2, stake: 474.39 },
       profit: 2.1,
-      status: 'Pending',
+      status: 'Pendente',
       date: '2024-07-21T10:00:00Z',
     },
     {
@@ -24,7 +24,7 @@ async function getRecentBets(): Promise<Bet[]> {
       bet1: { bookmaker: 'DraftKings', odds: 1.85, stake: 531.25 },
       bet2: { bookmaker: 'Caesars', odds: 2.25, stake: 468.75 },
       profit: 1.56,
-      status: 'Won',
+      status: 'Ganha',
       date: '2024-07-20T18:00:00Z',
       winningTeam: 'New York Knicks',
     },
@@ -36,7 +36,7 @@ async function getRecentBets(): Promise<Bet[]> {
       bet1: { bookmaker: 'BetRivers', odds: 2.05, stake: 493.83 },
       bet2: { bookmaker: 'PointsBet', odds: 2.05, stake: 506.17 },
       profit: 1.25,
-      status: 'Won',
+      status: 'Ganha',
       date: '2024-07-19T21:00:00Z',
       winningTeam: 'Denver Nuggets'
     },
@@ -48,7 +48,7 @@ async function getRecentBets(): Promise<Bet[]> {
       bet1: { bookmaker: 'FanDuel', odds: 2.3, stake: 465.12 },
       bet2: { bookmaker: 'Bet365', odds: 1.8, stake: 534.88 },
       profit: -2.33,
-      status: 'Lost',
+      status: 'Perdida',
       date: '2024-07-18T14:00:00Z',
     },
   ];
@@ -59,7 +59,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <Header pageTitle="Dashboard" />
+      <Header pageTitle="Painel" />
       <DashboardClient recentBets={recentBets} />
     </>
   );
