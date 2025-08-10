@@ -26,42 +26,38 @@ export async function sendToTelegram(formData: FormData) {
     // 1. Extract structured data using the AI flow
     const extractedData = await extractBettingData({ bettingData: text });
 
-    // 2. Calculate profit percentage
-    let profitHtml = '';
+    // 2. Format the main message body using the extracted data
+    const mainMessage = `🚨 <b>ORDEM DE ENTRADA — SUREBET (2 Vias)</b>
+📅 ${extractedData.date}
+🏆 ${extractedData.league}
+⚔️ ${extractedData.event}
+
+🏠 <b>${extractedData.bookmaker1}</b>
+🎯 ${extractedData.bet1}
+📈 Odd: <code>${extractedData.odd1}</code>
+
+🏠 <b>${extractedData.bookmaker2}</b>
+🎯 ${extractedData.bet2}
+📈 Odd: <code>${extractedData.odd2}</code>`;
+
+    // 3. Calculate profit percentage
+    let footer = '';
     const arbitragePercentage = (1 / numOdds1) + (1 / numOdds2);
     if (arbitragePercentage < 1) {
       const profit = (1 / arbitragePercentage - 1) * 100;
-      profitHtml = `
-📊 <b>ROI: +${profit.toFixed(2)}%</b>`;
+      footer += `\n\n📊 <b>ROI: +${profit.toFixed(2)}%</b>`;
     }
 
-    // 3. Format the message using the extracted data
-    const formattedMessage = `<b>🚨 ORDEM DE ENTRADA — SUREBET (2 Vias)</b>
-📅 <b>Data:</b> <i>${extractedData.date}</i>
-🏆 <b>Liga:</b> <i>${extractedData.league}</i>
-⚔️ <b>Evento:</b> <i>${extractedData.event}</i>
-
-🏠 <b>Bookmaker 1:</b> <i>${extractedData.bookmaker1}</i>
-🎯 <b>Aposta:</b> <i>${extractedData.bet1}</i>
-📈 <b>Odd:</b> <code>${extractedData.odd1}</code>
-
-🏠 <b>Bookmaker 2:</b> <i>${extractedData.bookmaker2}</i>
-🎯 <b>Aposta:</b> <i>${extractedData.bet2}</i>
-📈 <b>Odd:</b> <code>${extractedData.odd2}</code>
----
-${profitHtml}`;
-
-
+    // 4. Construct calculator URL
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
     const calculatorUrl = `${baseUrl}/calculator?odds1=${numOdds1}&odds2=${numOdds2}`;
 
-    // 4. Build the final message
-    const message = `
-${formattedMessage}
+    // 5. Add calculator link to the footer
+    footer += `\n\n👇 <b>Calcule sua entrada com qualquer valor!</b>
+<a href="${calculatorUrl}">ABRIR CALCULADORA DE SUREBET</a>`;
 
-👇 <b>Calcule sua entrada com qualquer valor!</b>
-<a href="${calculatorUrl}">ABRIR CALCULADORA DE SUREBET</a>
-`;
+    // 6. Build the final message
+    const message = `${mainMessage}${footer}`;
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
