@@ -15,14 +15,14 @@ function CalculatorLoading() {
 
 export default function CalculatorPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
-      <header className="absolute left-0 top-0 flex w-full items-center justify-between p-6">
-        <div className="flex items-center gap-2">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4 sm:p-6">
+      <header className="absolute left-0 top-0 flex w-full items-center justify-between p-4 sm:p-6">
+        <Link href="/" className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md">
           <Icons.logo className="h-8 w-8 text-primary" />
           <span className="font-headline text-xl font-bold text-primary">
             CanalUpsure
           </span>
-        </div>
+        </Link>
         <Button asChild variant="outline">
           <Link href="/login">
             <LogIn className="mr-2 h-4 w-4" />

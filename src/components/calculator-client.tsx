@@ -86,7 +86,7 @@ export function CalculatorClient() {
               id="total-stake"
               value={totalStake}
               onChange={(e) => setTotalStake(e.target.value)}
-              className="h-16 text-center text-4xl font-bold tracking-tight"
+              className="h-16 text-center text-3xl md:text-4xl font-bold tracking-tight"
               placeholder="1000"
             />
           </div>
@@ -126,7 +126,7 @@ export function CalculatorClient() {
                   <Label className="text-sm text-green-800">
                     Entrada {bookmaker1}
                   </Label>
-                  <p className="text-2xl font-bold text-green-700">
+                  <p className="text-xl md:text-2xl font-bold text-green-700">
                     R$ {stake1.toFixed(2)}
                   </p>
                 </div>
@@ -135,7 +135,7 @@ export function CalculatorClient() {
                   <Label className="text-sm text-green-800">
                     Entrada {bookmaker2}
                   </Label>
-                  <p className="text-2xl font-bold text-green-700">
+                  <p className="text-xl md:text-2xl font-bold text-green-700">
                     R$ {stake2.toFixed(2)}
                   </p>
                 </div>
@@ -149,7 +149,7 @@ export function CalculatorClient() {
               </div>
             </div>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center rounded-md bg-destructive/10 p-4 text-center text-destructive">
+            <div className="flex h-full min-h-[150px] flex-col items-center justify-center rounded-md bg-destructive/10 p-4 text-center text-destructive">
               <AlertCircle className="mb-2 h-8 w-8" />
               <p className="font-semibold">Não é uma Surebet</p>
               <p className="text-sm">
@@ -161,7 +161,7 @@ export function CalculatorClient() {
         </div>
       </CardContent>
       {isSurebet && (
-        <CardFooter className="flex items-center justify-around bg-green-600 p-4 text-white">
+        <CardFooter className="flex-col items-center justify-around gap-4 bg-green-600 p-4 text-white sm:flex-row sm:gap-0">
           <div className="flex items-center gap-3">
             <TrendingUp className="h-6 w-6" />
             <div>
@@ -169,7 +169,8 @@ export function CalculatorClient() {
               <p className="text-2xl font-bold">R$ {profit.toFixed(2)}</p>
             </div>
           </div>
-          <Separator orientation="vertical" className="h-10 bg-green-500" />
+          <Separator orientation="vertical" className="h-10 bg-green-500 hidden sm:block" />
+           <Separator orientation="horizontal" className="w-full bg-green-500 sm:hidden" />
           <div className="flex items-center gap-3">
             <CheckCircle className="h-6 w-6" />
             <div>

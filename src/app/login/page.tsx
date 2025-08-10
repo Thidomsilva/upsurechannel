@@ -26,7 +26,7 @@ export default function LoginPage() {
           </Link>
         </Button>
       </div>
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-sm sm:max-w-md">
         <Card className="shadow-2xl">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex items-center justify-center">

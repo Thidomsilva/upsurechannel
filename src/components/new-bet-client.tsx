@@ -160,11 +160,11 @@ Bet365 (Full)	H2(−0.25) 1º o período	1.800`}
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex flex-col-reverse gap-4 sm:flex-row sm:justify-between">
         <Button variant="ghost" onClick={resetState} disabled={isSubmitting || isExtracting}>
           Limpar
         </Button>
-        <Button onClick={handlePublish} disabled={!canSubmit}>
+        <Button onClick={handlePublish} disabled={!canSubmit} className="w-full sm:w-auto">
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
