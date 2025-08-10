@@ -30,10 +30,11 @@ export async function validateAndNormalizeBettingData(input: BettingDataInput): 
     output: { schema: BettingDataOutputSchema },
     prompt: `You are a data normalization expert for sports betting.
 Your task is to extract the two distinct decimal odds from the provided text.
-The odds are decimal numbers, usually with 2 or 3 decimal places. They typically appear immediately after the description of the bet type.
-Ignore any other numbers like percentages or monetary values that might appear at the end of the line.
+Each odd is on its own line, associated with a bookmaker (e.g., Betano, Bet365).
+The correct odd is the first decimal number, usually with 3 decimal places, that appears on the line after the bet description.
+Ignore any other numbers like percentages or monetary values that might appear later on the same line.
 
-Return the two odds you find.
+Return the two odds you find, one from each line.
 
 Betting Data:
 '''
