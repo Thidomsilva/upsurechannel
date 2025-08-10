@@ -19,10 +19,7 @@ export async function sendToTelegram(formData: FormData) {
 
     const { text, odds1, odds2 } = validatedData;
     
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) {
-      throw new Error('A variável de ambiente NEXT_PUBLIC_BASE_URL não está configurada.');
-    }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
 
     const calculatorUrl = `${baseUrl}/calculator?odds1=${odds1}&odds2=${odds2}`;
 

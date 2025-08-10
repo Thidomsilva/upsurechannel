@@ -34,9 +34,9 @@ The odds are decimal numbers, usually with 2 or 3 decimal places.
 Return the two odds you find.
 
 Betting Data:
-'\'\'\'
+'''
 {{{bettingData}}}
-'\'\'\'`,
+'''`,
   });
 
   const { output } = await prompt(input);
