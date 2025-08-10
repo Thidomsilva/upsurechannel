@@ -1,6 +1,6 @@
 'use server';
 
-import { validateAndNormalizeBettingData, type BettingDataInput } from '@/ai/flows/validate-and-normalize-betting-data';
+import { formatBetForTelegram } from '@/ai/flows/format-bet-for-telegram';
 import { z } from 'zod';
 
 const sendToTelegramSchema = z.object({
@@ -19,18 +19,18 @@ export async function sendToTelegram(formData: FormData) {
 
     const { text, odds1, odds2 } = validatedData;
     
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
+    // 1. Format the text using the new AI flow
+    const formattedMessage = await formatBetForTelegram({ bettingData: text });
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
     const calculatorUrl = `${baseUrl}/calculator?odds1=${odds1}&odds2=${odds2}`;
 
+    // 2. Build the final message with the formatted text and calculator link
     const message = `
-${text}
+${formattedMessage}
 
----
-
-👇 **Calcule sua entrada com qualquer valor!** 👇
-Clique no link abaixo para abrir a nossa calculadora com estas odds já preenchidas:
-<a href="${calculatorUrl}">Calculadora de Surebet</a>
+👇 <b>Calcule sua entrada com qualquer valor!</b>
+<a href="${calculatorUrl}">ABRIR CALCULADORA DE SUREBET</a>
 `;
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -71,14 +71,16 @@ Clique no link abaixo para abrir a nossa calculadora com estas odds já preenchi
   }
 }
 
-
+// This function is still needed for the auto-fill feature on the frontend
 export async function extractOddsFromText(bettingData: string): Promise<{ odds1: number, odds2: number } | { error: string }> {
     if (!bettingData.trim()) {
         return { error: 'O texto da aposta está vazio.' };
     }
     try {
-        const input: BettingDataInput = { bettingData };
-        const result = await validateAndNormalizeBettingData(input);
+        // We can use the formatting flow which also returns odds, or keep a separate one.
+        // For simplicity, let's just re-purpose the old one. We need to create a validateAndNormalizeBettingData flow.
+        const { validateAndNormalizeBettingData } = await import('@/ai/flows/validate-and-normalize-betting-data');
+        const result = await validateAndNormalizeBettingData({ bettingData });
         return { odds1: result.odds1, odds2: result.odds2 };
     } catch (error) {
         console.error('AI Error:', error);
