@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Send, ClipboardPaste, CheckCircle, Loader2 } from 'lucide-react';
+import { Send, ClipboardPaste, CheckCircle, Loader2, Calculator } from 'lucide-react';
 import { Textarea } from './ui/textarea';
 import { sendToTelegram } from '@/lib/actions';
 
@@ -43,7 +43,7 @@ export function NewBetClient() {
     if (result.success) {
       toast({
         title: 'Publicado no Telegram!',
-        description: 'A surebet foi enviada com sucesso para o canal.',
+        description: 'A surebet e o link da calculadora foram enviados.',
         action: (
           <div className="p-2 rounded-full bg-green-500">
             <CheckCircle className="text-white" />
@@ -68,11 +68,10 @@ export function NewBetClient() {
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">
-          Publicar Nova Surebet
+          Publicar Nova Surebet com Calculadora
         </CardTitle>
         <CardDescription>
-          Cole o texto da surebet abaixo e clique em publicar para enviá-la ao
-          seu canal do Telegram.
+          Cole o texto da surebet abaixo. O sistema irá extrair as odds, gerar um link de calculadora e enviar tudo para o seu canal do Telegram.
         </CardDescription>
       </CardHeader>
       <CardContent className="min-h-[300px] flex flex-col justify-center items-center">
@@ -102,9 +101,9 @@ Bet365 (Full)	H2(−0.25) 1º o período	1.800`}
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <Send className="mr-2 h-4 w-4" />
+            <Calculator className="mr-2 h-4 w-4" />
           )}
-          {isSubmitting ? 'Publicando...' : 'Publicar no Telegram'}
+          {isSubmitting ? 'Enviando...' : 'Enviar com Calculadora'}
         </Button>
       </CardFooter>
     </Card>
