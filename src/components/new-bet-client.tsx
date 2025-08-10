@@ -22,7 +22,7 @@ export function NewBetClient() {
   const { toast } = useToast();
 
   const handlePublish = async () => {
-    if (!betInfoTinfo.trim()) {
+    if (!betInfoText.trim()) {
       toast({
         title: 'Nenhuma informação fornecida',
         description: 'Por favor, cole as informações da aposta para publicar.',
