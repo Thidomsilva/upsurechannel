@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from './ui/badge';
-import { AlertCircle, TrendingUp } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle, TrendingUp } from 'lucide-react';
+import { Separator } from './ui/separator';
 
 export function CalculatorClient() {
   const searchParams = useSearchParams();
@@ -35,7 +36,7 @@ export function CalculatorClient() {
     arbitragePercentage = (1 / numOdds1) + (1 / numOdds2);
     if (arbitragePercentage < 1) {
       stake1 = (numTotalStake * (1 / numOdds1)) / arbitragePercentage;
-      stake2 = (numTotalStake * (1 / numOdds2)) / arbitragePercentage;
+      stake2 = numTotalStake - stake1; // More stable calculation
       profit = (stake1 * numOdds1) - numTotalStake;
       roi = (profit / numTotalStake) * 100;
     }
@@ -43,66 +44,85 @@ export function CalculatorClient() {
 
   const isSurebet = arbitragePercentage > 0 && arbitragePercentage < 1;
 
-
   return (
-    <Card className="w-full max-w-lg shadow-2xl">
-      <CardHeader>
+    <Card className="w-full max-w-2xl shadow-2xl overflow-hidden">
+      <CardHeader className="bg-muted/30 p-6">
         <CardTitle className="font-headline text-2xl">Calculadora de Surebet</CardTitle>
         <CardDescription>
           Insira o valor total que deseja apostar e veja a divisão ideal para garantir seu lucro.
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="odds1">Odd 1</Label>
-            <Input id="odds1" value={odds1} onChange={(e) => setOdds1(e.target.value)} placeholder="Ex: 2.50" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="odds2">Odd 2</Label>
-            <Input id="odds2" value={odds2} onChange={(e) => setOdds2(e.target.value)} placeholder="Ex: 1.80" />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="total-stake">Valor Total da Aposta (R$)</Label>
-          <Input 
-            id="total-stake" 
-            value={totalStake} 
-            onChange={(e) => setTotalStake(e.target.value)} 
-            className="text-2xl h-14 font-bold text-center"
-            placeholder="1000"
-          />
-        </div>
-        
-        {isSurebet ? (
-            <div className="grid grid-cols-2 gap-4 text-center">
-                 <div className="space-y-1 rounded-lg border p-4">
-                    <Label className="text-sm text-muted-foreground">Entrada Aposta 1</Label>
-                    <p className="text-xl font-bold">R$ {stake1.toFixed(2)}</p>
-                </div>
-                 <div className="space-y-1 rounded-lg border p-4">
-                    <Label className="text-sm text-muted-foreground">Entrada Aposta 2</Label>
-                    <p className="text-xl font-bold">R$ {stake2.toFixed(2)}</p>
-                </div>
+      <CardContent className="p-6 grid md:grid-cols-2 gap-8 items-start">
+        {/* Coluna da Esquerda: Entradas */}
+        <div className="grid gap-6">
+           <div className="space-y-2">
+              <Label htmlFor="total-stake" className="text-lg font-semibold">Valor Total da Aposta (R$)</Label>
+              <Input 
+                id="total-stake" 
+                value={totalStake} 
+                onChange={(e) => setTotalStake(e.target.value)} 
+                className="h-16 text-4xl font-bold text-center tracking-tight"
+                placeholder="1000"
+              />
             </div>
-        ) : (
-             <div className="flex items-center p-4 text-sm rounded-md bg-destructive/10 text-destructive">
-                <AlertCircle className="h-5 w-5 mr-3" />
-                Com as odds atuais, não é possível formar uma surebet. Verifique os valores.
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="odds1">Odd Casa 1</Label>
+                <Input id="odds1" value={odds1} onChange={(e) => setOdds1(e.target.value)} placeholder="Ex: 2.50" className="text-center font-medium"/>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="odds2">Odd Casa 2</Label>
+                <Input id="odds2" value={odds2} onChange={(e) => setOdds2(e.target.value)} placeholder="Ex: 1.80" className="text-center font-medium" />
+              </div>
             </div>
-        )}
+        </div>
 
+        {/* Coluna da Direita: Resultados */}
+        <div className="rounded-lg border bg-background p-6 space-y-4">
+            <h3 className="font-semibold text-lg text-center">Resultado da Simulação</h3>
+             {isSurebet ? (
+                <div className='space-y-4'>
+                    <div className="flex items-center justify-around text-center p-4 rounded-lg bg-green-50 border border-green-200">
+                        <div className="space-y-1">
+                            <Label className="text-sm text-green-800">Entrada Casa 1</Label>
+                            <p className="text-2xl font-bold text-green-700">R$ {stake1.toFixed(2)}</p>
+                        </div>
+                        <ArrowRight className="h-6 w-6 text-green-400" />
+                        <div className="space-y-1">
+                            <Label className="text-sm text-green-800">Entrada Casa 2</Label>
+                            <p className="text-2xl font-bold text-green-700">R$ {stake2.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div className='text-center'>
+                      <p className='text-sm text-muted-foreground'>Você arrisca R$ {numTotalStake.toFixed(2)} e tem um retorno de R$ {(numTotalStake + profit).toFixed(2)} em qualquer resultado.</p>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center p-4 rounded-md bg-destructive/10 text-destructive text-center h-full">
+                    <AlertCircle className="h-8 w-8 mb-2" />
+                    <p className='font-semibold'>Não é uma Surebet</p>
+                    <p className='text-sm'>Com as odds atuais, não é possível garantir lucro. Verifique os valores inseridos.</p>
+                </div>
+            )}
+        </div>
       </CardContent>
       {isSurebet && (
-         <CardFooter className="bg-muted/50 p-6 rounded-b-lg flex justify-between items-center">
+         <CardFooter className="bg-green-600 text-white p-4 flex justify-around items-center">
              <div className="flex items-center gap-3">
-                <TrendingUp className="h-6 w-6 text-green-600" />
+                <TrendingUp className="h-6 w-6" />
                 <div>
-                    <p className="text-sm text-muted-foreground">Lucro Garantido</p>
-                    <p className="text-2xl font-bold text-green-700">R$ {profit.toFixed(2)}</p>
+                    <p className="text-sm opacity-90">Lucro Garantido</p>
+                    <p className="text-2xl font-bold">R$ {profit.toFixed(2)}</p>
                 </div>
             </div>
-            <Badge variant="secondary" className="text-base">{roi.toFixed(2)}% ROI</Badge>
+            <Separator orientation='vertical' className='h-10 bg-green-500' />
+            <div className="flex items-center gap-3">
+                <CheckCircle className="h-6 w-6" />
+                <div>
+                    <p className="text-sm opacity-90">Retorno Sobre Investimento</p>
+                    <p className="text-2xl font-bold">{roi.toFixed(2)}%</p>
+                </div>
+            </div>
          </CardFooter>
       )}
     </Card>

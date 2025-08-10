@@ -3,14 +3,12 @@ import { Icons } from '@/components/icons';
 
 export default function CalculatorPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <div className="absolute top-6 text-center">
-         <div className="mx-auto mb-4 flex items-center justify-center">
-            <Icons.logo className="h-12 w-12 text-primary" />
-        </div>
-        <h1 className="font-headline text-3xl font-bold tracking-tighter text-primary">
-            CanalUpsure
-        </h1>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
+      <div className="absolute left-6 top-6 flex items-center gap-2">
+        <Icons.logo className="h-8 w-8 text-primary" />
+        <span className="font-headline text-xl font-bold text-primary">
+          CanalUpsure
+        </span>
       </div>
       <CalculatorClient />
     </main>
