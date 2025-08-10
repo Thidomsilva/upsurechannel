@@ -1,6 +1,6 @@
 'use server';
 
-import { formatBetForTelegram } from '@/ai/flows/format-bet-for-telegram';
+import { extractBettingData } from '@/ai/flows/format-bet-for-telegram';
 import { extractOddsFromText } from './actions-client';
 import { z } from 'zod';
 
@@ -23,8 +23,8 @@ export async function sendToTelegram(formData: FormData) {
     const numOdds1 = parseFloat(odds1);
     const numOdds2 = parseFloat(odds2);
 
-    // 1. Format the text using the AI flow
-    const formattedMessage = await formatBetForTelegram({ bettingData: text });
+    // 1. Extract structured data using the AI flow
+    const extractedData = await extractBettingData({ bettingData: text });
 
     // 2. Calculate profit percentage
     let profitHtml = '';
@@ -32,17 +32,33 @@ export async function sendToTelegram(formData: FormData) {
     if (arbitragePercentage < 1) {
       const profit = (1 / arbitragePercentage - 1) * 100;
       profitHtml = `
-📊 <b>ROI: +${profit.toFixed(2)}%</b>
-`;
+📊 <b>ROI: +${profit.toFixed(2)}%</b>`;
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
-    const calculatorUrl = `${baseUrl}/calculator?odds1=${odds1}&odds2=${odds2}`;
+    // 3. Format the message using the extracted data
+    const formattedMessage = `<b>🚨 ORDEM DE ENTRADA — SUREBET (2 Vias)</b>
+📅 <b>Data:</b> <i>${extractedData.date}</i>
+🏆 <b>Liga:</b> <i>${extractedData.league}</i>
+⚔️ <b>Evento:</b> <i>${extractedData.event}</i>
 
-    // 3. Build the final message with the formatted text, profit, and calculator link
+🏠 <b>Bookmaker 1:</b> <i>${extractedData.bookmaker1}</i>
+🎯 <b>Aposta:</b> <i>${extractedData.bet1}</i>
+📈 <b>Odd:</b> <code>${extractedData.odd1}</code>
+
+🏠 <b>Bookmaker 2:</b> <i>${extractedData.bookmaker2}</i>
+🎯 <b>Aposta:</b> <i>${extractedData.bet2}</i>
+📈 <b>Odd:</b> <code>${extractedData.odd2}</code>
+---
+${profitHtml}`;
+
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
+    const calculatorUrl = `${baseUrl}/calculator?odds1=${numOdds1}&odds2=${numOdds2}`;
+
+    // 4. Build the final message
     const message = `
 ${formattedMessage}
-${profitHtml}
+
 👇 <b>Calcule sua entrada com qualquer valor!</b>
 <a href="${calculatorUrl}">ABRIR CALCULADORA DE SUREBET</a>
 `;

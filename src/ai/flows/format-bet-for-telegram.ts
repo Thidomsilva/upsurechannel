@@ -1,48 +1,40 @@
 'use server';
 /**
- * @fileOverview A betting data formatting AI agent for Telegram.
+ * @fileOverview A betting data extraction AI agent.
  *
- * - formatBetForTelegram - A function that takes raw betting data and formats it into a clean HTML message for Telegram.
- * - BettingDataInput - The input type for the formatBetForTelegram function.
+ * - extractBettingData - A function that takes raw betting data and extracts structured information.
+ * - BettingDataInput - The input type for the extractBettingData function.
+ * - ExtractedBettingData - The output type for the extractBettingData function.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const BettingDataInputSchema = z.object({
+export const BettingDataInputSchema = z.object({
   bettingData: z
     .string()
     .describe('The raw text containing the betting information.'),
 });
 export type BettingDataInput = z.infer<typeof BettingDataInputSchema>;
 
-const FormattedBetOutputSchema = z.string().describe('The formatted HTML string for the Telegram message.');
+export const ExtractedBettingDataSchema = z.object({
+  date: z.string().describe('The date and time of the event (e.g., DD/MM/AAAA - HH:mm).'),
+  league: z.string().describe('The name of the league or tournament.'),
+  event: z.string().describe('The event description, including the teams (e.g., Time A vs Time B).'),
+  bookmaker1: z.string().describe('The name of the first bookmaker.'),
+  bet1: z.string().describe('The description of the first bet (e.g., H1(+0.25)).'),
+  odd1: z.string().describe('The odd for the first bet.'),
+  bookmaker2: z.string().describe('The name of the second bookmaker.'),
+  bet2: z.string().describe('The description of the second bet (e.g., H2(−0.25)).'),
+  odd2: z.string().describe('The odd for the second bet.'),
+});
+export type ExtractedBettingData = z.infer<typeof ExtractedBettingDataSchema>;
 
-const formatBetPrompt = ai.definePrompt({
-  name: 'formatBetPrompt',
+const extractBetPrompt = ai.definePrompt({
+  name: 'extractBetPrompt',
   input: { schema: BettingDataInputSchema },
-  output: { schema: FormattedBetOutputSchema },
-  prompt: `You are a sports betting expert. Your task is to reformat raw betting text into a structured HTML message for Telegram.
-You must extract all the relevant information and format the output EXACTLY as shown in the example below, using emojis and <b> tags for emphasis.
-The final output must be a single string. The Stake and Total values should NOT be included in the output.
-
-**Example Output Format:**
-<b>🚨 ORDEM DE ENTRADA — SUREBET (2 Vias)</b>
-📅 <b>Data:</b> <i>DD/MM/AAAA - HH:mm</i>
-🏆 <b>Liga:</b> <i>Nome da Liga</i>
-⚔️ <b>Evento:</b> <i>Time A vs Time B</i>
-
-🏠 <b>Bookmaker 1:</b> <i>Nome da Casa 1</i>
-🎯 <b>Aposta:</b> <i>Descrição da Aposta 1</i>
-📈 <b>Odd:</b> <code>ODD_1</code>
-
-🏠 <b>Bookmaker 2:</b> <i>Nome da Casa 2</i>
-🎯 <b>Aposta:</b> <i>Descrição da Aposta 2</i>
-📈 <b>Odd:</b> <code>ODD_2</code>
-
----
-
-Now, format the following text. Respond only with the formatted HTML.
+  output: { schema: ExtractedBettingDataSchema },
+  prompt: `You are a data extraction expert. Your task is to extract the specified information from the raw betting text.
 
 Raw Text:
 '''
@@ -52,10 +44,10 @@ Raw Text:
 });
 
 
-export async function formatBetForTelegram(input: BettingDataInput): Promise<string> {
-  const { output } = await formatBetPrompt(input);
+export async function extractBettingData(input: BettingDataInput): Promise<ExtractedBettingData> {
+  const { output } = await extractBetPrompt(input);
   if (!output) {
-    throw new Error('Could not format betting data.');
+    throw new Error('Could not extract betting data.');
   }
   return output;
 }
