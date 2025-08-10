@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 const sendToTelegramSchema = z.object({
   text: z.string().min(1, 'O texto da aposta não pode estar vazio.'),
-  odds1: z.string().refine(val => !isNaN(parseFloat(val)), { message: 'Odd 1 deve ser um número.' }),
-  odds2: z.string().refine(val => !isNaN(parseFloat(val)), { message: 'Odd 2 deve ser um número.' }),
+  odds1: z.string().refine(val => !isNaN(parseFloat(val)), { message: 'A Odd 1 deve ser um número.' }),
+  odds2: z.string().refine(val => !isNaN(parseFloat(val)), { message: 'A Odd 2 deve ser um número.' }),
 });
 
 export async function sendToTelegram(formData: FormData) {
