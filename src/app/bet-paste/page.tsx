@@ -1,3 +1,4 @@
+"use client";
 import BetPasteForm from '@/components/bet-paste-form';
 
 export default function BetPastePage() {
