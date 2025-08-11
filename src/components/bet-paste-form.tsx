@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { Save, Calculator, RotateCcw, Copy } from "lucide-react";
+import { Save, Calculator, RotateCcw, Copy, Send } from "lucide-react";
+import { sendSurebetToTelegram } from "@/lib/telegram";
 
 // Função de parsing local (baseada no exemplo fornecido)
 function parseBetData(data: string) {
@@ -58,11 +59,13 @@ function parseBetData(data: string) {
   };
 }
 
-export default function BetPasteForm() {
+function BetPasteForm() {
   const [rawData, setRawData] = useState("");
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [success, setSuccess] = useState("");
 
   const handleProcess = () => {
     setIsProcessing(true);
@@ -84,6 +87,34 @@ export default function BetPasteForm() {
   };
 
   const sampleData = `2025-07-19 02:00\tWellington Phoenix – Wrexham\tFutebol / Club Friendlies\nPinnacle (BR)\tH1(+0.75) 1º o período\t2.060\t0.0\t2.060\t47.00\t0\tBRL\t1.82\t2.75%\nBet365 (Full)\tH2(−0.75) 1º o período\t2.050\t0.0\t2.050\t48.00\t0\tBRL\t3.40\n\t\t\t\t\t95\t\tBRL`;
+
+  async function handleSendTelegram() {
+    if (!result) return;
+    setSending(true);
+    setSuccess("");
+    setError("");
+    try {
+      // Monta a URL da calculadora
+  const calculatorUrl = `https://upsurechannel.vercel.app/calculator?odds1=${encodeURIComponent(result.odds1)}&odds2=${encodeURIComponent(result.odds2)}&bookmaker1=${encodeURIComponent(result.casa1)}&bookmaker2=${encodeURIComponent(result.casa2)}`;
+      await sendSurebetToTelegram({
+        evento: result.evento,
+        data: result.data,
+        modalidade: result.modalidade,
+        casa1: result.casa1,
+        mercado1: result.mercado1,
+        odds1: result.odds1,
+        casa2: result.casa2,
+        mercado2: result.mercado2,
+        odds2: result.odds2,
+        margem: result.margem,
+        calculatorUrl
+      });
+      setSuccess("Enviado para o Telegram com sucesso!");
+    } catch (e: any) {
+      setError(e.message || "Erro ao enviar para o Telegram");
+    }
+    setSending(false);
+  }
 
   return (
     <Card className="max-w-2xl mx-auto mt-8">
@@ -170,9 +201,17 @@ export default function BetPasteForm() {
                 <Input value={result.margem} readOnly />
               </div>
             </div>
+            <Button onClick={handleSendTelegram} disabled={sending} className="w-full mt-4 bg-gradient-to-r from-green-500 to-blue-700 text-white font-bold shadow-lg hover:from-blue-700 hover:to-green-600 py-4 text-lg rounded-xl">
+              {sending ? 'Enviando...' : 'Enviar para o Telegram'}
+              <Send className="ml-2 h-5 w-5" />
+            </Button>
+            {success && <div className="text-green-600 text-sm mt-2">{success}</div>}
+            {error && !sending && <div className="text-red-500 text-sm mt-2">{error}</div>}
           </div>
         )}
       </CardContent>
     </Card>
   );
 }
+
+export default BetPasteForm;

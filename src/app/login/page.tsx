@@ -1,6 +1,9 @@
 'use client';
 
+
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,6 +19,32 @@ import { Icons } from '@/components/icons';
 import { Calculator } from 'lucide-react';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    // Email e senha do admin (pode ser .env)
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@exemplo.com';
+    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'upsure2024';
+    if (email === adminEmail && password === adminPassword) {
+      // Salva cookie simples (expira em 7 dias)
+      document.cookie = `upsure_auth=${email}; path=/; max-age=${60 * 60 * 24 * 7}`;
+      // Redireciona para rota protegida ou dashboard
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      router.replace(redirect);
+    } else {
+      setError('Credenciais inválidas');
+    }
+    setLoading(false);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="absolute right-4 top-4">
@@ -40,23 +69,24 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" placeholder="nome@exemplo.com" type="email" />
+                  <Input id="email" placeholder="nome@exemplo.com" type="email" value={email} onChange={e => setEmail(e.target.value)} />
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="password">Senha</Label>
-                  <Input id="password" placeholder="••••••••" type="password" />
+                  <Input id="password" placeholder="••••••••" type="password" value={password} onChange={e => setPassword(e.target.value)} />
                 </div>
+                {error && <div className="text-red-500 text-sm text-center">{error}</div>}
               </div>
+              <Button type="submit" className="w-full mt-4" disabled={loading}>
+                {loading ? 'Entrando...' : 'Login'}
+              </Button>
             </form>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button asChild className="w-full">
-              <Link href="/dashboard">Login</Link>
-            </Button>
             <div className="text-center text-sm">
               <Link href="#" className="underline">
                 Esqueceu sua senha?

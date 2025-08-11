@@ -1,5 +1,5 @@
 import { Header } from '@/components/header';
-import { NewBetClient } from '@/components/new-bet-client';
+import NewBetClient from '@/components/new-bet-client';
 
 export default function NewBetPage() {
     return (
