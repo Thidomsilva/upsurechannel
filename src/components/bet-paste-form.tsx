@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Save, Calculator, RotateCcw, Copy, Send } from "lucide-react";
 import { sendSurebetToTelegram } from "@/lib/telegram";
+import { saveOperation } from "@/lib/history";
 
 // Função de parsing local (baseada no exemplo fornecido)
 function parseBetData(data: string) {
@@ -108,6 +109,11 @@ function BetPasteForm() {
         odds2: result.odds2,
         margem: result.margem,
         calculatorUrl
+      });
+      // Salva no histórico local
+      saveOperation({
+        date: new Date().toISOString(),
+        roi: result.margem || "-"
       });
       setSuccess("Enviado para o Telegram com sucesso!");
     } catch (e: any) {
